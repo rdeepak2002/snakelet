@@ -1,3 +1,8 @@
+# build
+build/*
+build/
+build
+
 # Prerequisites
 *.d
 
@@ -50,6 +55,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# ai
+.ai
+.ai/*
 
 # debug information files
 *.dwo
