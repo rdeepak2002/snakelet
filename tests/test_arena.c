@@ -24,4 +24,7 @@ int main() {
 	for (int i = 0; i < 10; ++i) {
 		assert(ptr[i] == i * 3);
 	}
+
+	assert(arena_alloc_zero(&arena, 48));
+	assert(arena_alloc_zero(&arena, 1) == NULL);
 }
