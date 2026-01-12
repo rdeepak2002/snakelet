@@ -1,5 +1,5 @@
-#ifndef SNAKELET_ARENA_H
-#define SNAKELET_ARENA_H
+#ifndef ARENA_H
+#define ARENA_H
 
 #include <stddef.h>
 
@@ -21,4 +21,4 @@ size_t arena_get_pos(Arena* arena);
 
 void arena_set_pos(Arena* a, size_t pos);
 
-#endif // SNAKELET_ARENA_H
+#endif // ARENA_H
