@@ -18,33 +18,33 @@ Token scan_token(Tokenizer *tokenizer) {
 
 	switch (*token.start) {
 		case '\0':
-			token.type = EOF;
+			token.type = TOKEN_EOF;
 			token.length = 1;
 			tokenizer->current += 1;
 			break;
 		case '(':
-			token.type = LEFT_PAREN;
+			token.type = TOKEN_LEFT_PAREN;
 			token.length = 1;
 			tokenizer->current += 1;
 			break;
 		case ')':
-			token.type = RIGHT_PAREN;
+			token.type = TOKEN_RIGHT_PAREN;
 			token.length = 1;
 			tokenizer->current += 1;
 			break;
 		case ':':
-			token.type = COLON;
+			token.type = TOKEN_COLON;
 			token.length = 1;
 			tokenizer->current += 1;
 			break;
 		case '\n':
-			token.type = NEWLINE;
+			token.type = TOKEN_NEWLINE;
 			token.length = 1;
 			tokenizer->current += 1;
 			tokenizer->line += 1;
 			break;
 		case '"':
-			token.type = STRING;
+			token.type = TOKEN_STRING;
 			token.length = 1;
 			tokenizer->current += 1;
 			while (*tokenizer->current != '"') {
@@ -55,7 +55,7 @@ Token scan_token(Tokenizer *tokenizer) {
 			tokenizer->current += 1;
 			break;
 		case '\t':
-			token.type = INDENT;
+			token.type = TOKEN_INDENT;
 			token.length = 1;
 			tokenizer->current += 1;
 			break;
@@ -76,9 +76,9 @@ Token scan_token(Tokenizer *tokenizer) {
 			// check if def or identifier
 			const char* def_str = "def";
 			if (token.length == 3 && strncmp(token.start, def_str, token.length) == 0) {
-				token.type = DEF;
+				token.type = TOKEN_DEF;
 			} else {
-				token.type = IDENTIFIER;
+				token.type = TOKEN_IDENTIFIER;
 			}
 			
 			break;

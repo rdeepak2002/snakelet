@@ -3,16 +3,16 @@
 
 #include <stdint.h>
 typedef enum {
-	DEF,            // 'def' part of defining a function
-	IDENTIFIER, 	// ex: print, main, etc.
-	LEFT_PAREN, 	// ex: (
-	COLON,		// ex: :
-	STRING,	    	// ex: "Hello World"
-	RIGHT_PAREN,  	// ex: )
-	NEWLINE,
-	INDENT, 	// indentation
-	DEDENT, 	// undoing indentation
-	EOF
+	TOKEN_DEF,            // 'def' part of defining a function
+	TOKEN_IDENTIFIER, 	// ex: print, main, etc.
+	TOKEN_LEFT_PAREN, 	// ex: (
+	TOKEN_COLON,		// ex: :
+	TOKEN_STRING,	    	// ex: "Hello World"
+	TOKEN_RIGHT_PAREN,  	// ex: )
+	TOKEN_NEWLINE,
+	TOKEN_INDENT, 	// indentation
+	TOKEN_DEDENT, 	// undoing indentation
+	TOKEN_EOF
 } TokenType;
 
 typedef struct {
