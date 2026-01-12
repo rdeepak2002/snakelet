@@ -16,11 +16,16 @@ Token scan_token(Tokenizer *tokenizer) {
 
 	// TODO: figure out how to track DEDENT tokens
 
+	// ignore white space
+	while (*tokenizer->current == ' ') {
+		tokenizer->current += 1;
+	}
+	token.start = tokenizer->current;
+	
 	switch (*token.start) {
 		case '\0':
 			token.type = TOKEN_EOF;
-			token.length = 1;
-			tokenizer->current += 1;
+			token.length = 0;
 			break;
 		case '(':
 			token.type = TOKEN_LEFT_PAREN;
@@ -51,24 +56,21 @@ Token scan_token(Tokenizer *tokenizer) {
 				token.length += 1;
 				tokenizer->current += 1;
 			}
-			// start processing after the "
+			
+			// include closing "
+			token.length += 1;
 			tokenizer->current += 1;
+	
 			break;
 		case '\t':
 			token.type = TOKEN_INDENT;
 			token.length = 1;
 			tokenizer->current += 1;
 			break;
-		default:
-			// ignore white space
-			while (*tokenizer->current == ' ') {
-				tokenizer->current += 1;
-			}
-			token.start = tokenizer->current;
-			
+		default:	
 			// collect the full length of the identifier
 			token.length = 0;
-			while (*tokenizer->current != ' ') {
+			while (*tokenizer->current != ' ' && *tokenizer->current != '\n' && *tokenizer->current != '(') {
 				tokenizer->current += 1;
 				token.length += 1;
 			}
