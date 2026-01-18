@@ -7,6 +7,7 @@ void init_tokenizer(Tokenizer *tokenizer, const char *source) {
 	tokenizer->current = source;
 	tokenizer->line = 0;
 	tokenizer->indent_stack_top = 0;
+	tokenizer->cur_indent_stack_pointer = 0;
 }
 
 Token scan_token(Tokenizer *tokenizer) {
@@ -14,14 +15,19 @@ Token scan_token(Tokenizer *tokenizer) {
 	token.start = tokenizer->start;
 	token.line = tokenizer->line;
 
-	// TODO: figure out how to track DEDENT tokens
-
 	// ignore white space
 	while (*tokenizer->current == ' ') {
 		tokenizer->current += 1;
 	}
 	token.start = tokenizer->current;
 	
+	if (*token.start != '\t' && tokenizer->cur_indent_stack_pointer < tokenizer->indent_stack_top) {
+		tokenizer->indent_stack_top -= 1;
+		token.type = TOKEN_DEDENT;
+		token.length = 0;
+		return token;
+	}
+
 	switch (*token.start) {
 		case '\0':
 			token.type = TOKEN_EOF;
@@ -47,6 +53,7 @@ Token scan_token(Tokenizer *tokenizer) {
 			token.length = 1;
 			tokenizer->current += 1;
 			tokenizer->line += 1;
+			tokenizer->cur_indent_stack_pointer = 0;
 			break;
 		case '"':
 			token.type = TOKEN_STRING;
@@ -66,6 +73,9 @@ Token scan_token(Tokenizer *tokenizer) {
 			token.type = TOKEN_INDENT;
 			token.length = 1;
 			tokenizer->current += 1;
+			tokenizer->indent_stack[tokenizer->indent_stack_top] = 4;
+			tokenizer->indent_stack_top += 1;
+			tokenizer->cur_indent_stack_pointer += 1;
 			break;
 		default:	
 			// collect the full length of the identifier

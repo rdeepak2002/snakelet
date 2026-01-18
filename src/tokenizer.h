@@ -28,6 +28,7 @@ typedef struct {
 	int line;
 	int indent_stack[256];
 	int indent_stack_top;
+	int cur_indent_stack_pointer;
 } Tokenizer;
 
 void init_tokenizer(Tokenizer *tokenizer, const char *source);

@@ -47,6 +47,8 @@ int main() {
 	assert(validate_token(scan_token(&tokenizer), TOKEN_NEWLINE, "\n"));
 
 	assert(tokenizer.line == 2);
+	assert(tokenizer.indent_stack_top == 1);
+	assert(tokenizer.indent_stack[tokenizer.indent_stack_top - 1] == 4);
 	assert(validate_token(scan_token(&tokenizer), TOKEN_DEDENT, ""));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_NEWLINE, "\n"));
 
