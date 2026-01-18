@@ -115,10 +115,14 @@ Token scan_token(Tokenizer *tokenizer) {
 			token.length = 0;
 			int only_numbers = 1;
 			int first_val_is_num = 0;
+			int first_val_is_zero = 0;
 			
 
 			if (*tokenizer->current >= '0' && *tokenizer->current <= '9') {
 				first_val_is_num = 1;
+				if (*tokenizer->current == '0') {
+					first_val_is_zero = 1;
+				}
 			}
 
 			while (*tokenizer->current != ' ' && *tokenizer->current != '\n' && *tokenizer->current != '(' && *tokenizer->current != ')' && *tokenizer->current != ':' && *tokenizer->current != '"' && *tokenizer->current != '\t' && *tokenizer->current != '\0' && *tokenizer->current != '+' && *tokenizer->current != '-') {
@@ -134,6 +138,7 @@ Token scan_token(Tokenizer *tokenizer) {
 			if (token.length == 3 && strncmp(token.start, def_str, token.length) == 0) {
 				token.type = TOKEN_DEF;
 			} else if (only_numbers) {
+				assert(!first_val_is_zero);
 				token.type = TOKEN_NUMBER;
 			} else {
 				assert(!first_val_is_num);

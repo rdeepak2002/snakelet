@@ -27,9 +27,8 @@ int validate_token(Token actual, TokenType expected_type, char *expected_value) 
 
 int main() {
 	Tokenizer tokenizer;
-	char* source = "def main():\n\tprint(\"Hello world\")\n\tprint(-1 + 29 - 03)\n\n";
+	char* source = "def main():\n\tprint(\"Hello world\")\n\tprint(-1 + 29 - 103)\n\n";
 	init_tokenizer(&tokenizer, source);
-	// TODO: also check token.start and token.length
 	assert(validate_token(scan_token(&tokenizer), TOKEN_DEF, "def"));
 	assert(tokenizer.line == 0);
 	assert(validate_token(scan_token(&tokenizer), TOKEN_IDENTIFIER, "main"));
@@ -55,7 +54,7 @@ int main() {
 	assert(validate_token(scan_token(&tokenizer), TOKEN_PLUS, "+"));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_NUMBER, "29"));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_MINUS, "-"));
-	assert(validate_token(scan_token(&tokenizer), TOKEN_NUMBER, "03"));
+	assert(validate_token(scan_token(&tokenizer), TOKEN_NUMBER, "103"));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_RIGHT_PAREN, ")"));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_NEWLINE, "\n"));
 
