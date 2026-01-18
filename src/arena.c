@@ -57,6 +57,8 @@ size_t arena_get_pos(Arena *arena) {
 }
 
 void arena_set_pos(Arena *arena, size_t pos) {
-	assert(pos >= 0 && pos <= arena->buffer_length);
+	assert (arena != NULL);
+
+	assert(pos <= arena->buffer_length);
 	arena->offset = pos;
 }

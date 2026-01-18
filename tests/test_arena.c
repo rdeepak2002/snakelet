@@ -27,4 +27,6 @@ int main() {
 
 	assert(arena_alloc_zero(&arena, 48));
 	assert(arena_alloc_zero(&arena, 1) == NULL);
+	
+	return 0;
 }

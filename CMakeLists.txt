@@ -4,7 +4,7 @@ project(Snakelet VERSION 1.0)
 set(CMAKE_C_STANDARD 99)
 
 # 1. Build the library 
-add_library(snakelet_lib src/snakelet.c src/arena.c)
+add_library(snakelet_lib src/snakelet.c src/arena.c src/tokenizer.c)
 target_include_directories(snakelet_lib PUBLIC include PRIVATE src)
 
 # 2. Build the CLI
