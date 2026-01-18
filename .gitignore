@@ -62,3 +62,6 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# vim syntax file
+snakelet.vim
