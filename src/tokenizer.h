@@ -29,6 +29,7 @@ typedef struct {
 	int indent_stack[256];
 	int indent_stack_top;
 	int cur_indent_stack_pointer;
+	int bol;
 } Tokenizer;
 
 void init_tokenizer(Tokenizer *tokenizer, const char *source);

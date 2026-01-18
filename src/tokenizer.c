@@ -8,18 +8,23 @@ void init_tokenizer(Tokenizer *tokenizer, const char *source) {
 	tokenizer->line = 0;
 	tokenizer->indent_stack_top = 0;
 	tokenizer->cur_indent_stack_pointer = 0;
+	tokenizer->bol = 1;
 }
 
 Token scan_token(Tokenizer *tokenizer) {
 	Token token;
-	token.start = tokenizer->start;
 	token.line = tokenizer->line;
 
 	// ignore white space
 	while (*tokenizer->current == ' ') {
 		tokenizer->current += 1;
 	}
-	
+
+	// no tabs in middle of line
+	if (!tokenizer->bol) {
+		assert(*tokenizer->current != '\t');
+	}
+
 	while (*tokenizer->current == '\t' && tokenizer->cur_indent_stack_pointer < tokenizer->indent_stack_top) {
 		tokenizer->cur_indent_stack_pointer += 1;
 		tokenizer->current += 1;
@@ -34,19 +39,35 @@ Token scan_token(Tokenizer *tokenizer) {
 		return token;
 	}
 
+	tokenizer->bol = 0;
+
 	switch (*token.start) {
+		// whitespace
 		case '\t':
+			tokenizer->bol = 1; 
 			token.type = TOKEN_INDENT;
 			token.length = 1;
 			tokenizer->current += 1;
 			tokenizer->indent_stack[tokenizer->indent_stack_top] = 4;
 			tokenizer->indent_stack_top += 1;
 			tokenizer->cur_indent_stack_pointer += 1;
+			int max_len = sizeof(tokenizer->indent_stack) / sizeof(tokenizer->indent_stack[0]);
+			assert(tokenizer->indent_stack_top != max_len - 1);
 			break;
 		case '\0':
+			tokenizer->bol = 1;
 			token.type = TOKEN_EOF;
 			token.length = 0;
 			break;
+		case '\n':
+			tokenizer->bol = 1;
+			token.type = TOKEN_NEWLINE;
+			token.length = 1;
+			tokenizer->current += 1;
+			tokenizer->line += 1;
+			tokenizer->cur_indent_stack_pointer = 0;
+			break;
+		// non-whitespace
 		case '(':
 			token.type = TOKEN_LEFT_PAREN;
 			token.length = 1;
@@ -62,26 +83,21 @@ Token scan_token(Tokenizer *tokenizer) {
 			token.length = 1;
 			tokenizer->current += 1;
 			break;
-		case '\n':
-			token.type = TOKEN_NEWLINE;
-			token.length = 1;
-			tokenizer->current += 1;
-			tokenizer->line += 1;
-			tokenizer->cur_indent_stack_pointer = 0;
-			break;
 		case '"':
 			token.type = TOKEN_STRING;
 			token.length = 1;
 			tokenizer->current += 1;
 			while (*tokenizer->current != '"') {
+				assert(*tokenizer->current != '\0');
+				assert(*tokenizer->current != '\n');
 				token.length += 1;
 				tokenizer->current += 1;
 			}
-			
+
 			// include closing "
 			token.length += 1;
 			tokenizer->current += 1;
-	
+
 			break;
 		default:	
 			// collect the full length of the identifier
