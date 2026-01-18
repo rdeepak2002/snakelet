@@ -19,8 +19,14 @@ Token scan_token(Tokenizer *tokenizer) {
 	while (*tokenizer->current == ' ') {
 		tokenizer->current += 1;
 	}
-	token.start = tokenizer->current;
 	
+	while (*tokenizer->current == '\t' && tokenizer->cur_indent_stack_pointer < tokenizer->indent_stack_top) {
+		tokenizer->cur_indent_stack_pointer += 1;
+		tokenizer->current += 1;
+	}
+
+	token.start = tokenizer->current;
+
 	if (*token.start != '\t' && tokenizer->cur_indent_stack_pointer < tokenizer->indent_stack_top) {
 		tokenizer->indent_stack_top -= 1;
 		token.type = TOKEN_DEDENT;
@@ -29,6 +35,14 @@ Token scan_token(Tokenizer *tokenizer) {
 	}
 
 	switch (*token.start) {
+		case '\t':
+			token.type = TOKEN_INDENT;
+			token.length = 1;
+			tokenizer->current += 1;
+			tokenizer->indent_stack[tokenizer->indent_stack_top] = 4;
+			tokenizer->indent_stack_top += 1;
+			tokenizer->cur_indent_stack_pointer += 1;
+			break;
 		case '\0':
 			token.type = TOKEN_EOF;
 			token.length = 0;
@@ -69,18 +83,10 @@ Token scan_token(Tokenizer *tokenizer) {
 			tokenizer->current += 1;
 	
 			break;
-		case '\t':
-			token.type = TOKEN_INDENT;
-			token.length = 1;
-			tokenizer->current += 1;
-			tokenizer->indent_stack[tokenizer->indent_stack_top] = 4;
-			tokenizer->indent_stack_top += 1;
-			tokenizer->cur_indent_stack_pointer += 1;
-			break;
 		default:	
 			// collect the full length of the identifier
 			token.length = 0;
-			while (*tokenizer->current != ' ' && *tokenizer->current != '\n' && *tokenizer->current != '(') {
+			while (*tokenizer->current != ' ' && *tokenizer->current != '\n' && *tokenizer->current != '(' && *tokenizer->current != ')' && *tokenizer->current != ':' && *tokenizer->current != '"' && *tokenizer->current != '\t' && *tokenizer->current != '\0') {
 				tokenizer->current += 1;
 				token.length += 1;
 			}

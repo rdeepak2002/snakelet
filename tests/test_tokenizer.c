@@ -27,7 +27,7 @@ int validate_token(Token actual, TokenType expected_type, char *expected_value) 
 
 int main() {
 	Tokenizer tokenizer;
-	char* source = "def main():\n\tprint(\"Hello world\")\n\n";
+	char* source = "def main():\n\tprint(\"Hello world\")\n\tprint(\"Hello world 2\")\n\n";
 	init_tokenizer(&tokenizer, source);
 	// TODO: also check token.start and token.length
 	assert(validate_token(scan_token(&tokenizer), TOKEN_DEF, "def"));
@@ -46,13 +46,22 @@ int main() {
 	assert(validate_token(scan_token(&tokenizer), TOKEN_RIGHT_PAREN, ")"));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_NEWLINE, "\n"));
 
+
 	assert(tokenizer.line == 2);
+	assert(validate_token(scan_token(&tokenizer), TOKEN_IDENTIFIER, "print"));
+	assert(validate_token(scan_token(&tokenizer), TOKEN_LEFT_PAREN, "("));
+	assert(validate_token(scan_token(&tokenizer), TOKEN_STRING, "\"Hello world 2\""));
+	assert(validate_token(scan_token(&tokenizer), TOKEN_RIGHT_PAREN, ")"));
+	assert(validate_token(scan_token(&tokenizer), TOKEN_NEWLINE, "\n"));
+
+
+	assert(tokenizer.line == 3);
 	assert(tokenizer.indent_stack_top == 1);
 	assert(tokenizer.indent_stack[tokenizer.indent_stack_top - 1] == 4);
 	assert(validate_token(scan_token(&tokenizer), TOKEN_DEDENT, ""));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_NEWLINE, "\n"));
 
-	assert(tokenizer.line == 3);
+	assert(tokenizer.line == 4); 
 	// end of file returns the same token if called repeatedly
 	assert(validate_token(scan_token(&tokenizer), TOKEN_EOF, "\0"));
 	assert(validate_token(scan_token(&tokenizer), TOKEN_EOF, "\0"));
