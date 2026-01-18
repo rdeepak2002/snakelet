@@ -41,9 +41,12 @@ Token scan_token(Tokenizer *tokenizer) {
 
 	tokenizer->bol = 0;
 
+	int max_indent_stack_size = sizeof(tokenizer->indent_stack) / sizeof(tokenizer->indent_stack[0]);
+	
 	switch (*token.start) {
 		// whitespace
 		case '\t':
+			assert(tokenizer->indent_stack_top <= max_indent_stack_size - 1);
 			tokenizer->bol = 1; 
 			token.type = TOKEN_INDENT;
 			token.length = 1;
@@ -51,8 +54,6 @@ Token scan_token(Tokenizer *tokenizer) {
 			tokenizer->indent_stack[tokenizer->indent_stack_top] = 4;
 			tokenizer->indent_stack_top += 1;
 			tokenizer->cur_indent_stack_pointer += 1;
-			int max_len = sizeof(tokenizer->indent_stack) / sizeof(tokenizer->indent_stack[0]);
-			assert(tokenizer->indent_stack_top != max_len - 1);
 			break;
 		case '\0':
 			tokenizer->bol = 1;
